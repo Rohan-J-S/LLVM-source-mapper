@@ -1,8 +1,0 @@
-[
-{
-  "directory": "/Users/samvitgersappa/Projects/CD_Lab_EL/llvm-source-mapper/build",
-  "command": "/usr/bin/c++  -I/opt/homebrew/Cellar/llvm/20.1.4_1/include -I/opt/homebrew/opt/llvm/include -I/Users/samvitgersappa/Projects/CD_Lab_EL/llvm-source-mapper/include -isystem /opt/homebrew/include -isystem /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/libxml2 -std=gnu++17 -arch arm64   -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -o CMakeFiles/source-mapper.dir/src/SourceMapper.cpp.o -c /Users/samvitgersappa/Projects/CD_Lab_EL/llvm-source-mapper/src/SourceMapper.cpp",
-  "file": "/Users/samvitgersappa/Projects/CD_Lab_EL/llvm-source-mapper/src/SourceMapper.cpp",
-  "output": "CMakeFiles/source-mapper.dir/src/SourceMapper.cpp.o"
-}
-]
