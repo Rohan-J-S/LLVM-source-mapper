@@ -1,0 +1,82 @@
+# LLVM Source Mapper: Complete Command Guide
+# =========================================
+# This file contains the exact sequence of commands needed to set up,
+# build, and use the LLVM Source Mapper tool from scratch.
+
+# Step 1: Install Dependencies
+# ----------------------------
+# For macOS (Homebrew):
+brew install llvm cmake
+
+# Add LLVM to your path (required for building and running)
+export PATH="$(brew --prefix llvm)/bin:$PATH"
+export LDFLAGS="-L$(brew --prefix llvm)/lib"
+export CPPFLAGS="-I$(brew --prefix llvm)/include"
+
+# Step 2: Get the Code & Prepare Project Structure
+# ------------------------------------------------
+# (Skip if you already have the code)
+mkdir -p /Users/samvitgersappa/Projects/CD_Lab_EL/llvm-source-mapper/{src,include,build}
+cd /Users/samvitgersappa/Projects/CD_Lab_EL/llvm-source-mapper
+
+# Step 3: Configure & Build
+# -------------------------
+cd build
+cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DLLVM_DIR=$(llvm-config --cmakedir) ..
+make -j$(sysctl -n hw.logicalcpu)
+
+# (Optional) Symlink compile_commands.json to project root for tooling
+cd ..
+ln -sf build/compile_commands.json compile_commands.json
+
+# Step 4: Make the CLI Script Executable
+# --------------------------------------
+chmod +x llvm-source-mapper.sh
+
+# Step 5: Basic Usage
+# -------------------
+# Annotated LLVM IR (default)
+./llvm-source-mapper.sh test.cpp
+
+# Markdown side-by-side output (to stdout)
+./llvm-source-mapper.sh test.cpp --format=md
+
+# Save Markdown output to a file
+./llvm-source-mapper.sh test.cpp --format=md --output=test_mapping.md
+
+# Specify compilation database directory (if needed)
+./llvm-source-mapper.sh test.cpp --format=md --db=.
+
+# Use your own C++ file
+# ./llvm-source-mapper.sh path/to/your/file.cpp --format=md --output=your_mapping.md --db=.
+
+# Step 6: Advanced Usage
+# ----------------------
+# Process all .cpp files in the directory and save Markdown outputs
+for file in *.cpp; do
+  ./llvm-source-mapper.sh "$file" --format=md --output="${file%.cpp}_mapping.md" --db=.
+done
+
+# Run the binary directly (bypassing the script)
+./build/source-mapper test.cpp -format=md -o=output.md
+
+# Step 7: Troubleshooting
+# -----------------------
+# If you see 'command not found: llvm-config', try:
+export PATH="$(brew --prefix llvm)/bin:$PATH"
+export LDFLAGS="-L$(brew --prefix llvm)/lib"
+export CPPFLAGS="-I$(brew --prefix llvm)/include"
+
+# If build fails, clean and rebuild:
+cd build && rm -rf * && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DLLVM_DIR=$(llvm-config --cmakedir) .. && make -j$(sysctl -n hw.logicalcpu)
+
+# Step 8: Viewing Results
+# -----------------------
+# View Markdown output in terminal
+cat test_mapping.md
+
+# Or open in a Markdown viewer or browser (using pandoc):
+pandoc test_mapping.md -o test_mapping.html && open test_mapping.html
+
+# For help
+./llvm-source-mapper.sh --help
