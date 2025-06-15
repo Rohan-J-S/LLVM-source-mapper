@@ -80,3 +80,33 @@ pandoc test_mapping.md -o test_mapping.html && open test_mapping.html
 
 # For help
 ./llvm-source-mapper.sh --help
+
+# Step 9: Generate AI Summaries and HTML Output
+# ---------------------------------------------
+# 1. Create a .env file in the project root with your Groq API key:
+cat <<EOF > .env
+GROQ_API_KEY=your_actual_groq_api_key_here
+GROQ_MODEL=llama3-70b-8192  # (Optional) You can change the model if needed
+EOF
+
+# 2. (Recommended) Create and activate a Python virtual environment:
+python3 -m venv venv
+source venv/bin/activate
+
+# 3. Install required Python packages:
+pip install requests python-dotenv
+
+# 4. Generate mapping with AI summaries and HTML output:
+./generate_with_summaries.sh test.cpp --output=test_mapping_with_summaries.html
+
+# 5. Open the HTML output in your browser:
+open test_mapping_with_summaries.html
+
+# (Optional) For Markdown output with summaries:
+./generate_with_summaries.sh test.cpp --output=test_mapping_with_summaries.md
+
+# (Optional) To use a different model:
+./generate_with_summaries.sh test.cpp --output=test_mapping_with_summaries.html --model=llama3-8b-8192
+
+# (Optional) To process your own C++ file:
+./generate_with_summaries.sh path/to/your/file.cpp --output=your_mapping_with_summaries.html
