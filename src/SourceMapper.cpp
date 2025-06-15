@@ -5,6 +5,8 @@
 #include <map>
 #include <string>
 #include <memory>
+#include <curl/curl.h> // For HTTP requests to Groq API
+#include <nlohmann/json.hpp> // For JSON parsing/serialization
 
 #include "clang/Frontend/FrontendActions.h"
 #include "clang/Frontend/CompilerInstance.h"
@@ -24,6 +26,9 @@
 #include "llvm/Support/FileSystem.h"
 #include "llvm/DebugInfo/DIContext.h"
 #include "llvm/DebugInfo/DWARF/DWARFContext.h"
+
+// Define using directive for nlohmann::json
+using json = nlohmann::json;
 
 // Using explicit namespace qualifiers instead of using namespace directives
 // to avoid ambiguous references
@@ -221,9 +226,19 @@ void outputAnnotatedIR(const std::map<int, SourceLineMapping>& lineMapping, std:
     }
 }
 
-// Output in Markdown side-by-side format
+// Output in Markdown side-by-side format with improved formatting
 void outputMarkdownView(const std::map<int, SourceLineMapping>& lineMapping, std::ostream& out) {
     out << "# Source to LLVM IR Mapping\n\n";
+    
+    // Define column widths for better readability
+    out << "<style>\n";
+    out << "table {\n  width: 100%;\n  table-layout: fixed;\n  overflow-wrap: break-word;\n}\n";
+    out << "th:first-child {\n  width: 10%;\n}\n";
+    out << "th:nth-child(2) {\n  width: 20%;\n}\n";
+    out << "th:nth-child(3) {\n  width: 60%;\n}\n";
+    out << "th:last-child {\n  width: 10%;\n}\n";
+    out << "</style>\n\n";
+    
     out << "| Source Line | Source Code | LLVM IR | Summary |\n";
     out << "| ----------: | ----------- | ------- | ------- |\n";
     
@@ -231,34 +246,44 @@ void outputMarkdownView(const std::map<int, SourceLineMapping>& lineMapping, std
         int line = entry.first;
         const SourceLineMapping& mapping = entry.second;
         
-        // Combine IR instructions with newlines
-        std::string irCombined;
-        for (const auto& inst : mapping.irInstructions) {
-            irCombined += inst + "\n";
-        }
-        
-        // Escape pipe characters in the source and IR to maintain Markdown table structure
+        // Escape pipe characters in the source to maintain Markdown table structure
         std::string escapedSource = mapping.sourceLineContent;
-        std::string escapedIR = irCombined;
-        
         std::string::size_type pos = 0;
         while ((pos = escapedSource.find("|", pos)) != std::string::npos) {
             escapedSource.replace(pos, 1, "\\|");
             pos += 2;
         }
-        pos = 0;
-        while ((pos = escapedIR.find("|", pos)) != std::string::npos) {
-            escapedIR.replace(pos, 1, "\\|");
-            pos += 2;
-        }
         
-        // Use fenced code block for LLVM IR
+        // Output the source line and source code
         out << "| " << line << " | `" << escapedSource << "` | ";
-        if (!escapedIR.empty()) {
-            out << "```llvm\n" << escapedIR << "```";
+        
+        // Handle the LLVM IR instructions - each on its own line with proper formatting
+        if (!mapping.irInstructions.empty()) {
+            out << "<pre>";
+            for (size_t i = 0; i < mapping.irInstructions.size(); i++) {
+                std::string inst = mapping.irInstructions[i];
+                
+                // Escape pipe characters in each instruction
+                std::string::size_type irPos = 0;
+                while ((irPos = inst.find("|", irPos)) != std::string::npos) {
+                    inst.replace(irPos, 1, "\\|");
+                    irPos += 2;
+                }
+                
+                // Add the instruction with proper indentation
+                out << inst;
+                
+                // Add a line break if not the last instruction
+                if (i < mapping.irInstructions.size() - 1) {
+                    out << "\n";
+                }
+            }
+            out << "</pre>";
         } else {
             out << " ";
         }
+        
+        // Add summary column
         out << " | ";
         if (!mapping.summary.empty()) {
             out << mapping.summary;
