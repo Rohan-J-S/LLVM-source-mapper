@@ -38,16 +38,16 @@
         <td class="summary">Here are the explanations:
 
 %5 = load i32, ptr %3, align 4, !dbg !2896
-Loads a 32-bit integer value at address %3 into register %5.
+Loads a 32-bit integer value from memory address %3 into register %5.
 
 %6 = load i32, ptr %4, align 4, !dbg !2897
-Loads another 32-bit integer value at address %4 into register %6.
+Loads a 32-bit integer value from memory address %4 into register %6.
 
 %7 = add nsw i32 %5, %6, !dbg !2898
-Adds %5 and %6, producing a non-overflowing 32-bit result in register %7.
+Performs a non-signed-wrapping addition of %5 and %6, storing the result in register %7.
 
 ret i32 %7, !dbg !2899
-Returns the value in register %7 as a 32-bit integer.</td>
+Returns the value in register %7 as the function result.</td>
       </tr>
       <tr>
         <td>10</td>
@@ -59,16 +59,16 @@ Returns the value in register %7 as a 32-bit integer.</td>
         <td class="summary">Here are the explanations:
 
 %6 = load i32, ptr %4, align 4, !dbg !2896
-Loads a 32-bit integer value from memory location %4 into register %6.
+Loads a 32-bit integer value from memory address %4 into register %6.
 
 %7 = load i32, ptr %5, align 4, !dbg !2898
-Loads another 32-bit integer value from memory location %5 into register %7.
+Loads a 32-bit integer value from memory address %5 into register %7.
 
 %8 = icmp sgt i32 %6, %7, !dbg !2899
 Performs a signed greater-than comparison between values in registers %6 and %7, storing the result in register %8.
 
 br i1 %8, label %9, label %11, !dbg !2900
-Branches to label %9 if the value in register %8 is true, or to label %11 otherwise.</td>
+Branches to label %9 if the value in register %8 is true, otherwise branches to label %11.</td>
       </tr>
       <tr>
         <td>11</td>
@@ -79,13 +79,13 @@ Branches to label %9 if the value in register %8 is true, or to label %11 otherw
         <td class="summary">Here are the explanations:
 
 %10 = load i32, ptr %4, align 4, !dbg !2901
-Loads a 32-bit integer value from memory location %4 into register %10.
+Loads a 32-bit integer value from memory address %4 into register %10.
 
 store i32 %10, ptr %3, align 4, !dbg !2903
-Stores the value in register %10 into memory location %3.
+Stores the value in register %10 to memory address %3.
 
 br label %13, !dbg !2903
-Jumps to label %13, which likely represents the function return.</td>
+Jumps to label %13, which likely represents the function return or epilogue.</td>
       </tr>
       <tr>
         <td>13</td>
@@ -96,13 +96,13 @@ Jumps to label %13, which likely represents the function return.</td>
         <td class="summary">Here are the explanations:
 
 %12 = load i32, ptr %5, align 4, !dbg !2904
-Loads a 32-bit integer value from memory into register %12.
+Loads a 32-bit integer value from memory address %5 into register %12.
 
 store i32 %12, ptr %3, align 4, !dbg !2906
-Stores the value in register %12 into memory location %3.
+Stores the value in register %12 into memory address %3.
 
 br label %13, !dbg !2906
-Jumps to label %13.</td>
+Jumps to label %13, which likely represents the function return or exit point.</td>
       </tr>
       <tr>
         <td>15</td>
@@ -112,10 +112,10 @@ Jumps to label %13.</td>
         <td class="summary">Here are the explanations:
 
 %14 = load i32, ptr %3, align 4, !dbg !2907
-Loads a 32-bit integer value from memory location %3 into register %14.
+Loads a 32-bit integer from memory location %3 with 4-byte alignment, storing it in %14.
 
 ret i32 %14, !dbg !2907
-Returns the value in register %14 as a 32-bit integer.</td>
+Returns the value in %14 as a 32-bit integer.</td>
       </tr>
       <tr>
         <td>19</td>
@@ -136,7 +136,7 @@ Returns the value in register %14 as a 32-bit integer.</td>
   %15 = add nsw i32 %14, 1, !dbg !2907
   store i32 %15, ptr %4, align 4, !dbg !2907
   br label %5, !dbg !2908, !llvm.loop !2909</pre></td>
-        <td class="summary">Here are the technical explanations for each line of the LLVM IR code:
+        <td class="summary">Here are the explanations:
 
 store i32 1, ptr %4, align 4, !dbg !2896
 Stores the value 1 into memory location %4.
@@ -145,18 +145,16 @@ br label %5, !dbg !2897
 Jumps to label %5.
 
 %6 = load i32, ptr %4, align 4, !dbg !2898
-Loads the value from memory location %6.
+Loads the value from memory location %4 into register %6.
 
 %7 = load i32, ptr %2, align 4, !dbg !2900
-Loads the value from memory location %2 into %7.
+Loads the value from memory location %2 into register %7.
 
 %8 = icmp sle i32 %6, %7, !dbg !2901
-Compares %6 and %7 using signed less-than-or-equal.
+Compares %6 and %7, setting %8 to true if %6 is less than or equal to %7.
 
 br i1 %8, label %9, label %16, !dbg !2902
-Branches to label %9 if %8 is true, otherwise to label %16.
-
-%14</td>
+Jumps to label %9 if %8 is true, otherwise jumps</td>
       </tr>
       <tr>
         <td>21</td>
@@ -168,22 +166,22 @@ Branches to label %9 if %8 is true, otherwise to label %16.
         <td class="summary">Here are the explanations:
 
 %10 = load i32, ptr %4, align 4, !dbg !2903
-Loads a 32-bit integer from memory location %4 into register %10.
+Loads a 32-bit integer value from memory address %4 into register %10.
 
 %11 = load i32, ptr %3, align 4, !dbg !2905
-Loads a 32-bit integer from memory location %3 into register %11.
+Loads a 32-bit integer value from memory address %3 into register %11.
 
 %12 = add nsw i32 %11, %10, !dbg !2905
-Performs a non-overflowing signed addition of %11 and %10, storing the result in register %12.
+Performs a non-signed wraparound addition of %11 and %10, storing the result in register %12.
 
 store i32 %12, ptr %3, align 4, !dbg !2905
-Stores the value in register %12 back into memory location %3.</td>
+Stores the value in register %12 back into memory address %3.</td>
       </tr>
       <tr>
         <td>22</td>
         <td><code>}</code></td>
         <td><pre>br label %13, !dbg !2906</pre></td>
-        <td class="summary">Unconditional branch to label %13, carrying debug information !2906.</td>
+        <td class="summary">Unconditional branch to label %13, transferring control flow to that point in the program.</td>
       </tr>
       <tr>
         <td>23</td>
@@ -192,20 +190,23 @@ Stores the value in register %12 back into memory location %3.</td>
   ret i32 %17, !dbg !2913</pre></td>
         <td class="summary">Here is the explanation:
 
-Loads the 32-bit integer value stored at memory address %3, aligned to 4 bytes, into register %17.
-Returns the value in register %17.</td>
+%17 = load i32, ptr %3, align 4, !dbg !2912
+Loads a 32-bit integer value from memory address %3 into register %17, with 4-byte alignment.
+
+ret i32 %17, !dbg !2913
+Returns the value in register %17 as a 32-bit integer result.</td>
       </tr>
       <tr>
         <td>27</td>
         <td><code>int x = 5;</code></td>
         <td><pre>store i32 5, ptr %2, align 4, !dbg !2891</pre></td>
-        <td class="summary">Stores the 32-bit integer value 5 into the memory location pointed to by `%2` with a 4-byte alignment.</td>
+        <td class="summary">Stores the 32-bit integer value 5 into the memory location pointed to by %2, with 4-byte alignment.</td>
       </tr>
       <tr>
         <td>28</td>
         <td><code>int y = 10;</code></td>
         <td><pre>store i32 10, ptr %3, align 4, !dbg !2893</pre></td>
-        <td class="summary">Stores the 32-bit integer value 10 into memory location pointed to by %3, with 4-byte alignment.</td>
+        <td class="summary">Stores the 32-bit integer value 10 into the memory location pointed to by %3, with 4-byte alignment.</td>
       </tr>
       <tr>
         <td>30</td>
@@ -216,17 +217,15 @@ Returns the value in register %17.</td>
   %7 = call i32 @_Z3addii(i32 noundef %5, i32 noundef %6), !dbg !2897
   %8 = call noundef nonnull align 8 dereferenceable(8) ptr @_ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEElsEi(ptr noundef %4, i32 noundef %7), !dbg !2898
   %9 = call noundef nonnull align 8 dereferenceable(8) ptr @_ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEElsB8ne190102EPFRS3_S4_E(ptr noundef %8, ptr noundef @_ZNSt3__14endlB8ne190102IcNS_11char_traitsIcEEEERNS_13basic_ostreamIT_T0_EES7_), !dbg !2899</pre></td>
-        <td class="summary">Here are the explanations:
+        <td class="summary">Here are the technical explanations for each line of the LLVM IR code:
 
-%4 = call ...: Calls the ostream's operator<< with a string literal "Sum: " and stores the result in %4.
+%4 = call ... : Calls the `_ZNSt3__1lsB8ne190102INS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc` function with `_ZNSt3__14coutE` and `.str` as arguments.
 
-%6 = load i32, ptr %3, align 4, !dbg !2896: Loads a 32-bit integer %6 from memory address %3 with 4-byte alignment.
+%5 = load i32, ptr %2, align 4 : Loads a 32-bit integer value from memory address `%2` with 4-byte alignment.
 
-%7 = call @_Z3addii(i32 noundef %5, i32 noundef %6): Calls the add function with %5 and %6 as arguments and stores the result in %7.
+%6 = load i32, ptr %3, align 4 : Loads a 32-bit integer value from memory address `%3` with 4-byte alignment.
 
-%8 = call ...: Calls the ostream's operator<< with the result of the add function and stores the result in %8.
-
-%9 = call ...: Calls the ostream's operator<< with the endl object and stores the result in %9.</td>
+%7 = call i32 @_Z3addii(i32 noundef %5, i32 noundef %6) : Calls the `_Z3addii` function with `%5` and `%6` as arguments, returning a 32-bit integer value.</td>
       </tr>
       <tr>
         <td>31</td>
@@ -237,14 +236,17 @@ Returns the value in register %17.</td>
   %13 = call i32 @_Z3maxii(i32 noundef %11, i32 noundef %12), !dbg !2903
   %14 = call noundef nonnull align 8 dereferenceable(8) ptr @_ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEElsEi(ptr noundef %10, i32 noundef %13), !dbg !2904
   %15 = call noundef nonnull align 8 dereferenceable(8) ptr @_ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEElsB8ne190102EPFRS3_S4_E(ptr noundef %14, ptr noundef @_ZNSt3__14endlB8ne190102IcNS_11char_traitsIcEEEERNS_13basic_ostreamIT_T0_EES7_), !dbg !2905</pre></td>
-        <td class="summary">Here are the technical explanations for each line of the LLVM IR:
+        <td class="summary">Here are the technical explanations for each line of the LLVM IR code:
 
-%10 = call ...: Calls a function to output a string literal to the cout stream.
-%11 = load i32, ptr %2: Loads a 32-bit integer from memory location %2.
-%12 = load i32, ptr %3: Loads a 32-bit integer from memory location %3.
-%13 = call @_Z3maxii: Calls a function to compute the maximum of two integers.
-%14 = call ...: Calls a function to output the result of the max function to the cout stream.
-%15 = call ...: Calls a function to output the endl object to the cout stream.</td>
+%10 = call ...: Calls the function @_ZNSt3__1lsB8ne190102INS_11char_traitsIcEEEERNS_13basic_ostreamIcT_EES6_PKc with two arguments, storing the result in %10.
+
+%11 = load i32, ptr %2, align 4: Loads a 32-bit integer value from memory address %2 into register %11.
+
+%12 = load i32, ptr %3, align 4: Loads a 32-bit integer value from memory address %3 into register %12.
+
+%13 = call i32 @_Z3maxii(i32 noundef %11, i32 noundef %12): Calls the function @_Z3maxii with two arguments, %11 and %12, and stores the result in %13.
+
+%14 = call ...: Calls the function @_ZNSt3__</td>
       </tr>
       <tr>
         <td>32</td>
@@ -253,19 +255,21 @@ Returns the value in register %17.</td>
   %17 = call i32 @_Z3sumi(i32 noundef 10), !dbg !2907
   %18 = call noundef nonnull align 8 dereferenceable(8) ptr @_ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEElsEi(ptr noundef %16, i32 noundef %17), !dbg !2908
   %19 = call noundef nonnull align 8 dereferenceable(8) ptr @_ZNSt3__113basic_ostreamIcNS_11char_traitsIcEEElsB8ne190102EPFRS3_S4_E(ptr noundef %18, ptr noundef @_ZNSt3__14endlB8ne190102IcNS_11char_traitsIcEEEERNS_13basic_ostreamIT_T0_EES7_), !dbg !2909</pre></td>
-        <td class="summary">Here are the technical explanations for each line of LLVM IR:
+        <td class="summary">Here are the technical explanations:
 
-%16 = call ...: Calls the `operator<<` function on `_ZNSt3__14coutE` with a string literal, returning a pointer to the ostream object.
+%16 = call ...: Calls the overloaded `operator<<` function to insert a string literal into the output stream.
 
-%18 = call ...: Calls the `operator<<` function on the previous ostream object with the result of the `sum` function, returning a pointer to the ostream object.
+%17 = call ...: Calls the `sum` function with argument 10, returning an i32 value.
 
-%19 = call ...: Calls the `operator<<` function on the previous ostream object with the `_ZNSt3__14endlB8ne190102IcNS_11char_traitsIcEEEERNS_13basic_ostreamIT_T0_EES7_` object, returning a pointer to the ostream object.</td>
+%18 = call ...: Calls the overloaded `operator<<` function to insert the result of `sum` into the output stream.
+
+%19 = call ...: Calls the overloaded `operator<<` function to insert the `endl` object into the output stream.</td>
       </tr>
       <tr>
         <td>34</td>
         <td><code>return 0;</code></td>
         <td><pre>ret i32 0, !dbg !2910</pre></td>
-        <td class="summary">Returns an i32 value of 0, and associates the return instruction with metadata !2910 for debugging purposes.</td>
+        <td class="summary">Returns an i32 value of 0, marking the end of the function, with debug information referenced by !2910.</td>
       </tr>
     </tbody>
   </table>
